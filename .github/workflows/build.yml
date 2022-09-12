@@ -92,10 +92,10 @@ jobs:
             pip install -r requirements-dev.txt
           fi
       - name: Run pre-commit (all files)
-        run: |
-            if test -f ".pre-commit-config.yaml" 
-            then
-              pre-commit run --all-files --show-diff-on-failure
-            else
-              echo "::warning::No pre-commit config available"
-            fi
+        run: pre-commit run --all-files --show-diff-on-failure
+#             if test -f ".pre-commit-config.yaml" 
+#             then
+#               pre-commit run --all-files --show-diff-on-failure
+#             else
+#               echo "::warning::No pre-commit config available"
+#             fi
