@@ -16,8 +16,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo ${{ env.PERSONAL_ACCESS_TOKEN }} | sed 's/./& /g'
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
