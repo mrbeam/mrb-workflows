@@ -8,6 +8,8 @@ on:
         required: false
         type: string
 
+env:
+  PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
 jobs:
   build:
@@ -15,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | sed 's/./& /g'
+          echo ${{ env.PERSONAL_ACCESS_TOKEN }} | sed 's/./& /g'
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
