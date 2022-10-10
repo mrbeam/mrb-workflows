@@ -39,12 +39,8 @@ jobs:
             fi
       - name: Run pytest
         id: pytest
-        continue-on-error: true  # For now, we don't fail the build, but will show an error
         run: |
           pytest -v  --cov --cov-report=xml --cov-report=html --junit-xml=xunit-result.xml --html=pytest-report.html
-      - name: Tests failed
-        run: echo "::error::Unit tests are failing"
-        if: always() && steps.pytest.outcome == 'failure'
 
       # This step fails with error: ./octoprint_mrbeam permission denied
       #- name: GitHub Action for pylint
