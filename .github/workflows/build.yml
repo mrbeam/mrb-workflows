@@ -41,14 +41,6 @@ jobs:
         id: pytest
         run: |
           pytest -v  --cov --cov-report=xml --cov-report=html --junit-xml=xunit-result.xml --html=pytest-report.html
-
-      # This step fails with error: ./octoprint_mrbeam permission denied
-      #- name: GitHub Action for pylint
-      #  uses: cclauss/GitHub-Action-for-pylint@0.7.0
-      #  with:
-      #    args: '**/*.py'
-      #  if: always()
-      #  continue-on-error: true
       - name: Analysing the code with pylint
         continue-on-error: true
         if: always()
@@ -57,9 +49,10 @@ jobs:
       - name: SonarCloud Scan
         if: always()
         uses: SonarSource/sonarcloud-github-action@master
-      #  with:
-      #    args: >
-      #      -Dsonar.verbose=true
+        with:
+          # This will fail the build if the quality gate is not met
+          args: >
+            -Dsonar.qualitygate.wait=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
