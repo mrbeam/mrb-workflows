@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: DEBUG
         run: |
-          echo LATEST RELEASE ${{ LATEST_RELEASE }}
+          echo LATEST RELEASE $LATEST_RELEASE
 
       - name: Set up Python ${{ inputs.python_v }}
         uses: actions/setup-python@v2
