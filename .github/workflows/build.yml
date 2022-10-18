@@ -16,9 +16,7 @@ jobs:
     name: Latest Release
     runs-on: ubuntu-latest
     outputs:
-      latest_release:
-        description: "The latest released version for the current branch"
-        value: ${{ steps.latestTag.outputs.tag }}
+      latest_release: ${{ steps.latestTag.outputs.tag }}
     steps:
       - name: Print GitHub event action
         id: triggerEvent
