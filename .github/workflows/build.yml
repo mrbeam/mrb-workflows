@@ -17,8 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub event action
+        id: triggerEvent
         run: |
           echo "${{ github.event.action }}"
+          echo "${{ github.event }}"
+          echo "${{ github.event.pull_request }}"
+          echo "${{ github.event.push.branches }}"
+          echo "${{ GITHUB_REF_NAME }}"
+          echo "${{ env.GITHUB_REF_NAME }}"
       - uses: oprypin/find-latest-tag@v1
         with:
           repository: ${{ github.repository }}  # The repository to scan.
@@ -27,6 +33,13 @@ jobs:
         id: latestTag  # The step ID to refer to later.
 
       - run: echo "Repository is at version ${{ steps.latestTag.outputs.tag }}"
+
+      - name: It's a PR
+        if: ${{ github.event_name == 'pull_request' }}
+        run: echo This event is a pull request.
+      - name: It's a push
+        if: ${{ github.event_name == 'push' }}
+        run: echo This event is a push.
 
 #  build:
 #    name: Build
