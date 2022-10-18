@@ -23,7 +23,6 @@ jobs:
           echo "${{ github.event }}"
           echo "${{ github.event.pull_request }}"
           echo "${{ github.event.push.branches }}"
-          echo "${{ GITHUB_REF_NAME }}"
           echo "${{ env.GITHUB_REF_NAME }}"
       - uses: oprypin/find-latest-tag@v1
         with:
