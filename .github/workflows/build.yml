@@ -26,10 +26,13 @@ jobs:
           echo "${{ github.event.pull_request }}"
           echo "${{ github.event.push.branches }}"
           echo "${{ env.GITHUB_REF_NAME }}"
-      - uses: oprypin/find-latest-tag@v1
+      - name: Get latest alpha
+        if:  ${{ env.GITHUB_REF_NAME }} == "alpha"
+        uses: oprypin/find-latest-tag@v1
         with:
           repository: ${{ github.repository }}
           releases-only: true
+          regex: 'v\d+\.\d+\.\d+a\d+$'
           token: ${{ env.PERSONAL_ACCESS_TOKEN }}
         id: latestTag
 
