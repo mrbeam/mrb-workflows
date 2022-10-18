@@ -85,7 +85,7 @@ jobs:
           # This will fail the build if the quality gate is not met
           args: >
             -Dsonar.qualitygate.wait=true
-            -Dsonar.projectVersion=${{ inputs.latest_release }}
+            -Dsonar.projectVersion=${{ outputs.latest_release }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
