@@ -61,7 +61,7 @@ jobs:
             ${{ steps.latestAlphaTag.outputs.tag }} || 
             ${{ steps.latestBetaTag.outputs.tag }} || 
             ${{ steps.latestStableTag.outputs.tag }}' >> $GITHUB_OUTPUT
-        id:
+        id: latestRelease
 #
 #      - name: It's a PR
 #        if: ${{ github.event_name == 'pull_request' }}
