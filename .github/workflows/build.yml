@@ -19,14 +19,6 @@ jobs:
     outputs:
       latest_release: ${{ steps.latestRelease.outputs.tag }}
     steps:
-      - name: Print GitHub event action
-        id: triggerEvent
-        run: |
-          echo "${{ github.event.action }}"
-          echo "${{ github.event }}"
-          echo "${{ github.event.pull_request }}"
-          echo "${{ github.event.push.branches }}"
-          echo "${{ env.GITHUB_REF_NAME }}"
       - name: Get latest alpha tag
         if: github.ref == 'refs/heads/alpha' && github.event_name != 'pull_request'
         uses: oprypin/find-latest-tag@v1
