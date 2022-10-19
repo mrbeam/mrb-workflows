@@ -58,9 +58,10 @@ jobs:
       - name: Select latest version for ${{ env.GITHUB_REF_NAME }}
         run: |
           echo 'tag=
-            ${{ steps.latestAlphaTag.outputs.tag }} || 
-            ${{ steps.latestBetaTag.outputs.tag }} || 
-            ${{ steps.latestStableTag.outputs.tag }}' >> $GITHUB_OUTPUT
+            [  -z ${{ steps.latestAlphaTag.outputs.tag }} ] && ${{ steps.latestAlphaTag.outputs.tag }} ||
+            [  -z ${{ steps.latestBetaTag.outputs.tag }} ] && ${{ steps.latestBetaTag.outputs.tag }} ||
+            [  -z ${{ steps.latestStableTag.outputs.tag }} ] && ${{ steps.latestStableTag.outputs.tag }}' ||
+            >> $GITHUB_OUTPUT
         id: latestRelease
 #
 #      - name: It's a PR
