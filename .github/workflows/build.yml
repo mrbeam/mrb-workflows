@@ -12,8 +12,8 @@ env:
   PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
 jobs:
-  latestRelease:
-    name: Latest Release
+  latestRelease:  # We need the latest release for alpha, beta and stable to define the new code for Sonarcloud
+    name: Get latest release
     runs-on: ubuntu-latest
     continue-on-error: true
     outputs:
@@ -46,31 +46,19 @@ jobs:
           regex: 'v\d+\.\d+\.\d+$'
           token: ${{ env.PERSONAL_ACCESS_TOKEN }}
         id: latestStableTag
-
-      - run: echo "Repository is at version ${{ steps.latestAlphaTag.outputs.tag }}  ${{ steps.latestBetaTag.outputs.tag }}  ${{ steps.latestStableTag.outputs.tag }}"
       - name: Select latest version for ${{ env.GITHUB_REF_NAME }}
         run: |
           if [ ${{ steps.latestAlphaTag.outputs.tag }} ]; then
-            echo ALPHAAAA ${{ steps.latestAlphaTag.outputs.tag }}
             echo 'tag=${{ steps.latestAlphaTag.outputs.tag }}' >> $GITHUB_OUTPUT
           elif [ ${{ steps.latestBetaTag.outputs.tag }} ]; then
-            echo BETAAAA ${{ steps.latestBetaTag.outputs.tag }}
             echo 'tag=${{ steps.latestBetaTag.outputs.tag }}' >> $GITHUB_OUTPUT
           elif [ ${{ steps.latestStableTag.outputs.tag }} ]; then
-            echo STABLEEE ${{ steps.latestStableTag.outputs.tag }}
             echo 'tag=${{ steps.latestStableTag.outputs.tag }}' >> $GITHUB_OUTPUT
           else
-            echo NOTHING
             echo 'tag=' >> $GITHUB_OUTPUT
           fi
         id: latestRelease
-#
-#      - name: It's a PR
-#        if: ${{ github.event_name == 'pull_request' }}
-#        run: echo This event is a pull request.
-#      - name: It's a push
-#        if: ${{ github.event_name == 'push' }}
-#        run: echo This event is a push.
+      - run: echo "New code defined since version ${{ steps.latestRelease.outputs.tag }} (only on push triggers)"
 
   build:
     name: Build
