@@ -77,6 +77,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: latestRelease
     steps:
+      - run: echo "Repository is at version ${{ needs.latestRelease.outputs.latest_release }}"
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
