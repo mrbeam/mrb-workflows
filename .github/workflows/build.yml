@@ -15,6 +15,7 @@ jobs:
   latestRelease:
     name: Latest Release
     runs-on: ubuntu-latest
+    continue-on-error: true
     outputs:
       latest_release: ${{ steps.latestRelease.outputs.tag }}
     steps:
