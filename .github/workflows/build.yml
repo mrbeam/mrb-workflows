@@ -16,7 +16,7 @@ jobs:
     name: Latest Release
     runs-on: ubuntu-latest
     outputs:
-      latest_release: ${{ steps.latestTag.outputs.tag }}
+      latest_release: ${{ steps.latestRelease.outputs.tag }}
     steps:
       - name: Print GitHub event action
         id: triggerEvent
@@ -26,17 +26,42 @@ jobs:
           echo "${{ github.event.pull_request }}"
           echo "${{ github.event.push.branches }}"
           echo "${{ env.GITHUB_REF_NAME }}"
-      - name: Get latest alpha
-        if:  ${{ env.GITHUB_REF_NAME }} == "alpha"
+      - name: Get latest alpha tag
+        if: github.ref == 'refs/heads/alpha' && github.event_name != 'pull_request'
         uses: oprypin/find-latest-tag@v1
         with:
           repository: ${{ github.repository }}
           releases-only: true
           regex: 'v\d+\.\d+\.\d+a\d+$'
           token: ${{ env.PERSONAL_ACCESS_TOKEN }}
-        id: latestTag
+        id: latestAlphaTag
+      - name: Get latest beta tag
+        if: github.ref == 'refs/heads/beta' && github.event_name != 'pull_request'
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: ${{ github.repository }}
+          releases-only: true
+          regex: 'v\d+\.\d+\.\d+b\d+$'
+          token: ${{ env.PERSONAL_ACCESS_TOKEN }}
+        id: latestBetaTag
+      - name: Get latest stable tag
+        if: github.ref == 'refs/heads/stable' && github.event_name != 'pull_request'
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: ${{ github.repository }}
+          releases-only: true
+          regex: 'v\d+\.\d+\.\d+$'
+          token: ${{ env.PERSONAL_ACCESS_TOKEN }}
+        id: latestStableTag
 
-      - run: echo "Repository is at version ${{ steps.latestTag.outputs.tag }}"
+      - run: echo "Repository is at version ${{ steps.latestAlphaTag.outputs.tag }}  ${{ steps.latestBetaTag.outputs.tag }}  ${{ steps.latestStableTag.outputs.tag }}"
+      - name: Select latest version for ${{ env.GITHUB_REF_NAME }}
+        run: |
+          echo 'tag=
+            ${{ steps.latestAlphaTag.outputs.tag }} || 
+            ${{ steps.latestBetaTag.outputs.tag }} || 
+            ${{ steps.latestStableTag.outputs.tag }}' >> $GITHUB_OUTPUT
+        id:
 #
 #      - name: It's a PR
 #        if: ${{ github.event_name == 'pull_request' }}
