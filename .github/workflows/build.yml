@@ -50,13 +50,13 @@ jobs:
       - run: echo "Repository is at version ${{ steps.latestAlphaTag.outputs.tag }}  ${{ steps.latestBetaTag.outputs.tag }}  ${{ steps.latestStableTag.outputs.tag }}"
       - name: Select latest version for ${{ env.GITHUB_REF_NAME }}
         run: |
-          if [ -z ${{ steps.latestAlphaTag.outputs.tag }} ]; then
+          if [ ${{ steps.latestAlphaTag.outputs.tag }} ]; then
             echo ALPHAAAA ${{ steps.latestAlphaTag.outputs.tag }}
             echo 'tag=${{ steps.latestAlphaTag.outputs.tag }}' >> $GITHUB_OUTPUT
-          elif [ -z ${{ steps.latestBetaTag.outputs.tag }} ]; then
+          elif [ ${{ steps.latestBetaTag.outputs.tag }} ]; then
             echo BETAAAA ${{ steps.latestBetaTag.outputs.tag }}
             echo 'tag=${{ steps.latestBetaTag.outputs.tag }}' >> $GITHUB_OUTPUT
-          elif [ -z ${{ steps.latestStableTag.outputs.tag }} ]; then
+          elif [ ${{ steps.latestStableTag.outputs.tag }} ]; then
             echo STABLEEE ${{ steps.latestStableTag.outputs.tag }}
             echo 'tag=${{ steps.latestStableTag.outputs.tag }}' >> $GITHUB_OUTPUT
           else
