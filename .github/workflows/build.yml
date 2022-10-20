@@ -120,7 +120,7 @@ jobs:
             -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
             -Dsonar.projectName=${{ github.event.repository.name }}
             -Dsonar.sources=${{ inputs.source_dir }}
-            -Dsonar.tests=tests
+            -Dsonar.tests=""
             -Dsonar.python.coverage.reportPaths=coverage*.xml
             -Dsonar.python.xunit.reportPath=xunit-result*.xml
             -Dsonar.dynamicAnalysis=reuseReports
