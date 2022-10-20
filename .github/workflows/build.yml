@@ -117,7 +117,7 @@ jobs:
             -Dsonar.projectVersion=${{ needs.latestRelease.outputs.latest_release }}
             -Dsonar.python.version=${{ inputs.python_v }}
             -Dsonar.organization=${{ github.repository_owner }} 
-            -Dsonar.projectKey=${{ github.repository_owner }}_${{ inputs.project_name }}
+            -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
             -Dsonar.projectName=${{ github.event.repository.name }}
             -Dsonar.sources=${{ inputs.source_dir }}
             -Dsonar.tests=tests
