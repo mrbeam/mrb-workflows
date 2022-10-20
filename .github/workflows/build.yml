@@ -25,7 +25,7 @@ jobs:
         with:
           repository: ${{ github.repository }}
           releases-only: true
-          regex: 'v\d+\.\d+\.\d+a\d+(.post\d+)?$'
+          regex: 'v\d+\.\d+\.\d+a\d+$'
           token: ${{ env.PERSONAL_ACCESS_TOKEN }}
         id: latestAlphaTag
       - name: Get latest beta tag
@@ -34,7 +34,7 @@ jobs:
         with:
           repository: ${{ github.repository }}
           releases-only: true
-          regex: 'v\d+\.\d+\.\d+b\d+(.post\d+)?$'
+          regex: 'v\d+\.\d+\.\d+b\d+$'
           token: ${{ env.PERSONAL_ACCESS_TOKEN }}
         id: latestBetaTag
       - name: Get latest stable tag
