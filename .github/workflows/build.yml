@@ -13,7 +13,7 @@ on:
         type: string
       exclude_from_coverage:
         description: "Directories to be excluded from the test coverage report"
-        default: dummy/path
+        default: /dummy/path
         required: false
         type: string
 
