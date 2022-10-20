@@ -7,6 +7,14 @@ on:
         default: 3.10.6
         required: false
         type: string
+      source_dir:
+        description: "The source directory of the code, to be used by Sonar Scan"
+        required: false
+        type: string
+      exclude_from_coverage:
+        description: "Directories to be excluded from the test coverage report"
+        required: false
+        type: string
 
 env:
   PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -102,10 +110,21 @@ jobs:
         if: always()
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          # This will fail the build if the quality gate is not met
+          # qualitygate.wait=true: will fail the build if the quality gate is not met
+          # projectVersion: the version to which the code needs to be compared (will only apply on push, no PR)
           args: >
             -Dsonar.qualitygate.wait=true
             -Dsonar.projectVersion=${{ needs.latestRelease.outputs.latest_release }}
+            -Dsonar.python.version=${{ inputs.python_v }}
+            -Dsonar.organization=${{ github.repository_owner }} 
+            -Dsonar.projectKey=${{ github.repository_owner }}_${{ inputs.project_name }}
+            -Dsonar.projectName=${{ github.event.repository.name }}
+            -Dsonar.sources=${{ inputs.source_dir }}
+            -Dsonar.tests=tests
+            -Dsonar.python.coverage.reportPaths=coverage*.xml
+            -Dsonar.python.xunit.reportPath=xunit-result*.xml
+            -Dsonar.dynamicAnalysis=reuseReports
+            -Dsonar.coverage.exclusions=${{ inputs.exclude_from_coverage }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
