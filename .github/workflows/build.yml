@@ -110,6 +110,7 @@ jobs:
         continue-on-error: true
         if: always()
         run: |
+          set -o pipefail  # This will use the exit code of the pylint command, and not the tee
           pylint --ignore-patterns=tests/* --fail-under=${{ inputs.pylint_fail_under }} **/*.py  2>&1 | tee pylint-report.log
       - name: SonarCloud Scan
         if: always()
