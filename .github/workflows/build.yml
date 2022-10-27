@@ -107,7 +107,6 @@ jobs:
         run: |
           pytest -v  --cov --cov-report=xml --cov-report=html --junit-xml=xunit-result.xml --html=pytest-report.html
       - name: Analysing the code with pylint
-        continue-on-error: true
         if: always()
         run: |
           set -o pipefail  # This will use the exit code of the pylint command, and not the tee
