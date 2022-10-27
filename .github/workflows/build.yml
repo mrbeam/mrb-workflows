@@ -110,7 +110,7 @@ jobs:
         continue-on-error: true
         if: always()
         run: |
-          pylint --ignore-patterns=tests/* --fail-under=${{ inputs.pylint_fail_under }} **/*.py  2>&1 | tee pylint-report.log
+          pylint --ignore-patterns=tests/* --threshold ${{ inputs.pylint_fail_under }} **/*.py  2>&1 | tee pylint-report.log
       - name: SonarCloud Scan
         if: always()
         uses: SonarSource/sonarcloud-github-action@master
