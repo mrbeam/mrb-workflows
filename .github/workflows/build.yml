@@ -15,6 +15,11 @@ on:
         description: "Directories to be excluded from the test coverage report"
         required: false
         type: string
+      pylint_fail_under:
+        description: "The minimum pylint score for a build to succeed"
+        default: 0
+        required: false
+        type: number
 
 env:
   PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -102,10 +107,10 @@ jobs:
         run: |
           pytest -v  --cov --cov-report=xml --cov-report=html --junit-xml=xunit-result.xml --html=pytest-report.html
       - name: Analysing the code with pylint
-        continue-on-error: true
         if: always()
         run: |
-          pylint --ignore-patterns=tests/* --exit-zero **/*.py  2>&1 | tee pylint-report.log
+          set -o pipefail  # This will use the exit code of the pylint command, and not the tee
+          pylint --ignore-patterns=tests/* --fail-under=${{ inputs.pylint_fail_under }} **/*.py  2>&1 | tee pylint-report.log
       - name: SonarCloud Scan
         if: always()
         uses: SonarSource/sonarcloud-github-action@master
