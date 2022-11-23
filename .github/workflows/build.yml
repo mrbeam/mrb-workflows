@@ -81,11 +81,11 @@ jobs:
       - name: New code definition
         if: ${{ needs.latestRelease.outputs.latest_release }}
         run: echo "${{ github.ref }} is at version ${{ needs.latestRelease.outputs.latest_release }}"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Python ${{ inputs.python_v }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
             python-version: ${{ inputs.python_v }}
       - uses: actions/cache@v3  # Cache dependencies to speed up process
@@ -150,11 +150,11 @@ jobs:
     name: Check formatting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Python ${{ inputs.python_v }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
             python-version: ${{ inputs.python_v }}
       - name: Install pre-commit
