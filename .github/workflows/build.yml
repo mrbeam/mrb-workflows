@@ -100,7 +100,7 @@ jobs:
             pip install pylint pytest pytest-cov pytest-html
             if test -f "requirements-dev.txt"
             then
-              pip install -r requirements-dev.txt
+              pip install --force-reinstall -r requirements-dev.txt
             fi
       - name: Run pytest
         id: pytest
