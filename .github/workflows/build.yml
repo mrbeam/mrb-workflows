@@ -109,10 +109,10 @@ jobs:
       - name: Analysing the code with pylint
         if: always()
         run: |
-          set -o pipefail  # This will use the exit code of the pylint command, and not the tee
-          if (( ${{ inputs.pylint_fail_under }} == 0 )); then
+          if (( $(echo "${{ inputs.python_v }} < 3" |bc -l) )); then
             pylint --ignore-patterns=tests/*  **/*.py  2>&1 | tee pylint-report.log
           else
+            set -o pipefail  # This will use the exit code of the pylint command, and not the tee
             pylint --ignore-patterns=tests/* --fail-under=${{ inputs.pylint_fail_under }} **/*.py  2>&1 | tee pylint-report.log
           fi
       - name: SonarCloud Scan
