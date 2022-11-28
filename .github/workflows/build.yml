@@ -100,7 +100,7 @@ jobs:
             pip install pylint pytest pytest-cov pytest-html
             if test -f "requirements-dev.txt"
             then
-              pip install -r requirements-dev.txt
+              pip install --force-reinstall -r requirements-dev.txt
             fi
       - name: Run pytest
         id: pytest
@@ -109,8 +109,12 @@ jobs:
       - name: Analysing the code with pylint
         if: always()
         run: |
-          set -o pipefail  # This will use the exit code of the pylint command, and not the tee
-          pylint --ignore-patterns=tests/* --fail-under=${{ inputs.pylint_fail_under }} **/*.py  2>&1 | tee pylint-report.log
+          if (( $(echo "${{ inputs.python_v }} < 3" |bc -l) )); then
+            pylint --ignore-patterns=tests/*  **/*.py  2>&1 | tee pylint-report.log
+          else
+            set -o pipefail  # This will use the exit code of the pylint command, and not the tee
+            pylint --ignore-patterns=tests/* --fail-under=${{ inputs.pylint_fail_under }} **/*.py  2>&1 | tee pylint-report.log
+          fi
       - name: SonarCloud Scan
         if: always()
         uses: SonarSource/sonarcloud-github-action@master
