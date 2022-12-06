@@ -27,7 +27,7 @@ env:
 jobs:
   latestRelease:  # We need the latest release for alpha, beta and stable to define the new code for Sonarcloud
     name: Get latest release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     continue-on-error: true
     outputs:
       latest_release: ${{ steps.latestRelease.outputs.tag }}
@@ -75,7 +75,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: latestRelease
     steps:
       - name: New code definition
@@ -152,7 +152,7 @@ jobs:
 
   format:
     name: Check formatting
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
