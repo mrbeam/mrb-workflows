@@ -25,7 +25,10 @@ env:
   PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
 jobs:
-  latestRelease:  # We need the latest release for alpha, beta and stable to define the new code for Sonarcloud
+  # We need the latest release for alpha, beta and stable to define the new code for Sonarcloud
+  # If no previous release available, the overall code will be analyzed.
+  # (New code = code changes from the latest release)
+  latestRelease:
     name: Get latest release
     runs-on: ubuntu-20.04
     continue-on-error: true
