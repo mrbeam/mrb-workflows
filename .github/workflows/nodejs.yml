@@ -107,6 +107,7 @@ jobs:
           -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
           -Dsonar.projectName=${{ github.event.repository.name }}
           -Dsonar.sources=${{ inputs.source_dir }}
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
           -Dsonar.dynamicAnalysis=reuseReports
           -Dsonar.coverage.exclusions=${{ inputs.exclude_from_coverage }}
       env:
