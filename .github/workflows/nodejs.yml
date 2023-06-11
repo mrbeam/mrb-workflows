@@ -90,7 +90,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
-      run: npm install
+      run: npm ci
     - name: Run ESLint
       run: npx eslint .
     - name: Run tests
@@ -129,7 +129,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Set up Python ${{ inputs.python_v }}
         uses: actions/setup-python@v4
         with:
