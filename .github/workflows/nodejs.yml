@@ -1,0 +1,147 @@
+name: Node.js CI
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: "Node.js version needed to run the code, eg. 19.8.1"
+        default: 19.8.1
+        required: false
+        type: string
+      source_dir:
+        description: "The source directory of the code, to be used by Sonar Scan"
+        required: false
+        type: string
+      exclude_from_coverage:
+        description: "Directories to be excluded from the test coverage report"
+        required: false
+        type: string
+
+env:
+  PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+jobs:
+  # We need the latest release for dev, beta and stable to define the new code for Sonarcloud
+  # If no previous release available, the overall code will be analyzed.
+  # (New code = code changes from the latest release)
+  latestRelease:
+    name: Get latest release
+    runs-on: ubuntu-20.04
+    continue-on-error: true
+    outputs:
+      latest_release: ${{ steps.latestRelease.outputs.tag }}
+    steps:
+      - name: Get latest dev tag
+        if: github.ref == 'refs/heads/dev' && github.event_name != 'pull_request'
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: ${{ github.repository }}
+          releases-only: true
+          regex: 'v\d+\.\d+\.\d+a\d+$'
+          token: ${{ env.PERSONAL_ACCESS_TOKEN }}
+        id: latestDevTag
+      - name: Get latest beta tag
+        if: github.ref == 'refs/heads/beta' && github.event_name != 'pull_request'
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: ${{ github.repository }}
+          releases-only: true
+          regex: 'v\d+\.\d+\.\d+b\d+$'
+          token: ${{ env.PERSONAL_ACCESS_TOKEN }}
+        id: latestBetaTag
+      - name: Get latest stable tag
+        if: github.ref == 'refs/heads/stable' && github.event_name != 'pull_request'
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: ${{ github.repository }}
+          releases-only: true
+          regex: 'v\d+\.\d+\.\d+(.post\d+)?$'
+          token: ${{ env.PERSONAL_ACCESS_TOKEN }}
+        id: latestStableTag
+      - name: Select latest version for ${{ github.ref }}
+        run: |
+          if [ ${{ steps.latestDevTag.outputs.tag }} ]; then
+            echo 'tag=${{ steps.latestDevTag.outputs.tag }}' >> $GITHUB_OUTPUT
+          elif [ ${{ steps.latestBetaTag.outputs.tag }} ]; then
+            echo 'tag=${{ steps.latestBetaTag.outputs.tag }}' >> $GITHUB_OUTPUT
+          elif [ ${{ steps.latestStableTag.outputs.tag }} ]; then
+            echo 'tag=${{ steps.latestStableTag.outputs.tag }}' >> $GITHUB_OUTPUT
+          else
+            echo 'tag=' >> $GITHUB_OUTPUT
+          fi
+        id: latestRelease
+      - run: echo "New code defined since version ${{ steps.latestRelease.outputs.tag }} (only on push triggers)"
+
+  build:
+    name: Node.js CI
+    runs-on: ubuntu-20.04
+    needs: latestRelease
+    steps:
+    - name: New code definition
+      if: ${{ needs.latestRelease.outputs.latest_release }}
+      run: echo "${{ github.ref }} is at version ${{ needs.latestRelease.outputs.latest_release }}"
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    - name: Use Node.js ${{ inputs.node_version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node_version }}
+    - name: Install dependencies
+      run: npm ci
+    - name: Run ESLint
+      run: npx eslint .
+    - name: Run tests
+      run: npm test
+    - name: SonarCloud Scan
+      if: always()
+      uses: SonarSource/sonarcloud-github-action@v1.8
+      with:
+        # qualitygate.wait=true: will fail the build if the quality gate is not met
+        # projectVersion: the version to which the code needs to be compared (will only apply on push, no PR)
+        args: >
+          -Dsonar.projectVersion=${{ needs.latestRelease.outputs.latest_release }}
+          -Dsonar.organization=${{ github.repository_owner }} 
+          -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
+          -Dsonar.projectName=${{ github.event.repository.name }}
+          -Dsonar.sources=${{ inputs.source_dir }}
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+          -Dsonar.dynamicAnalysis=reuseReports
+          -Dsonar.coverage.exclusions=${{ inputs.exclude_from_coverage }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage
+        path: htmlcov
+  
+  format:
+    name: Check formatting
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Use Node.js ${{ inputs.node_version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node_version }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Set up Python ${{ inputs.python_v }}
+        uses: actions/setup-python@v4
+        with:
+            python-version: ${{ inputs.python_v }}
+      - name: Install pre-commit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pre-commit
+          pre-commit install
+      - name: Run pre-commit (all files)
+        run: |
+          if test -f ".pre-commit-config.yaml"
+          then
+            pre-commit run --all-files --show-diff-on-failure
+          else
+            echo "::warning::No pre-commit config available"
+          fi
