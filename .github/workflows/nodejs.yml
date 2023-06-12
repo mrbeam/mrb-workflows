@@ -2,11 +2,6 @@ name: Node.js CI
 on:
   workflow_call:
     inputs:
-      python_v:
-        description: "Python version needed to run the code, eg. 3.10.6"
-        default: 3.10.6
-        required: false
-        type: string
       source_dir:
         description: "The source directory of the code, to be used by Sonar Scan"
         required: false
