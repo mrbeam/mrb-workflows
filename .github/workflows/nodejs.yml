@@ -2,7 +2,7 @@ name: Node.js CI
 on:
   workflow_call:
     inputs:
-      node-version:
+      node_version:
         description: "Node.js version needed to run the code, eg. 19.8.1"
         default: 19.8.1
         required: false
