@@ -99,7 +99,6 @@ jobs:
         # qualitygate.wait=true: will fail the build if the quality gate is not met
         # projectVersion: the version to which the code needs to be compared (will only apply on push, no PR)
         args: >
-          -Dsonar.branch.name=stable
           -Dsonar.projectVersion=${{ needs.latestRelease.outputs.latest_release }}
           -Dsonar.organization=${{ github.repository_owner }} 
           -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
