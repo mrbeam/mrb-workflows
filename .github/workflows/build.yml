@@ -83,6 +83,8 @@ jobs:
       image: python:2.7.18-buster
     needs: latestRelease
     steps:
+      - name: Install container dependencies
+        run: sudo apt-get install -y bc
       - name: New code definition
         if: ${{ needs.latestRelease.outputs.latest_release }}
         run: echo "${{ github.ref }} is at version ${{ needs.latestRelease.outputs.latest_release }}"
