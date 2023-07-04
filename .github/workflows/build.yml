@@ -112,7 +112,7 @@ jobs:
       - name: Analysing the code with pylint
         if: always()
         run: |
-          if (( $(echo "${{ inputs.python_v }} < 3" |bc -l) )); then
+          if echo "${{ inputs.python_v }} < 3" |bc -l >/dev/null 2>&1; then
             pylint --ignore-patterns=tests/*  **/*.py  2>&1 | tee pylint-report.log
           else
             set -o pipefail  # This will use the exit code of the pylint command, and not the tee
