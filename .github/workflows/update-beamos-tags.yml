@@ -1,0 +1,57 @@
+name: Update tags on mrbeam/mrb3-beamOS
+
+on:
+  workflow_call:
+
+jobs:
+  update-tags:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout mrb3-beamOS
+        uses: actions/checkout@v2
+        with:
+            repository: mrbeam/mrb3-beamOS
+            path: mrb3-beamOS
+            token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+            fetch-depth: 0 # Fetch all history for all tags and branches
+
+      - name: Update mrbeam-git-tags.inc
+        run: |
+          cd mrb3-beamOS
+          git config --global user.email "softwareautomations@mr-beam.org"
+          git config --global user.name "sw-automations-mrbeam"
+
+          # Extract repository name from the GitHub repository URL
+          REPO_NAME=$(echo "${{ github.event.repository.url }}" | awk -F/ '{print $NF}' | sed 's/.git//')
+          cd meta-mrbeam/recipes-core/mrbeam3
+          if [ $REPO_NAME = "iobeam" ]; then
+            REPO_NAME=mrb3-${REPO_NAME}
+          fi
+          echo "REPO_NAME: $REPO_NAME"
+
+          # Define conditions
+          ALPHA="^v[0-9]+\.[0-9]+\.[0-9]+a[0-9]+$"
+          STABLE="^v[0-9]+\.[0-9]+\.[0-9]+$"
+          RC="^v[0-9]+\.[0-9]+\.[0-9]+rc[0-9]+$"
+          POST="^v[0-9]+\.[0-9]+\.[0-9]+\.post[0-9]+$"
+
+          # Check if the tag is an alpha tag
+          if [[ "${{ github.event.ref }}" =~ $ALPHA ]]; then
+            git checkout alpha
+            sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.ref }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
+            git add .
+            git commit -m "Update $REPO_NAME to ${{ github.event.ref }}"
+            git push origin alpha
+          # Else the tag is a stable tag or RC tag or post tag
+          elif [[ "${{ github.event.ref }}" =~ $STABLE ]] || \
+               [[ "${{ github.event.ref }}" =~ $RC ]] || \
+               [[ "${{ github.event.ref }}" =~ $POST ]]; then
+            git checkout stable
+            sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.ref }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
+            git add .
+            git commit -m "Update $REPO_NAME to ${{ github.event.ref }}"
+            git push origin stable
+          else
+            echo "Tag format not recognized : ${{ github.event.ref }} "
+          fi
