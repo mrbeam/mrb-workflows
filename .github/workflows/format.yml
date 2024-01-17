@@ -1,6 +1,6 @@
 name: Check formatting
 on:
-  workfow_call:
+  workflow_call:
     inputs:
       python_v:
         description: "Python version needed to run the code, eg. 3.10.6"
