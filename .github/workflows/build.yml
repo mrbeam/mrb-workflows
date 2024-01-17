@@ -154,4 +154,4 @@ jobs:
           path: pytest-report.html
 
   format:
-    uses: mrbeam/mrb-workflows/.github/workflows/format.yml@SW-4258-add-a-simplified-version-of-the-workflow
+    uses: mrbeam/mrb-workflows/.github/workflows/format.yml@main
