@@ -38,11 +38,11 @@ jobs:
 
           # Check if the tag is an alpha tag
           if [[ "${{ github.event.ref }}" =~ $ALPHA ]]; then
-            git checkout alpha
+            git checkout test_automations
             sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.ref }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
             git add .
             git commit -m "Update $REPO_NAME to ${{ github.event.ref }}"
-            git push origin alpha
+            git push origin test_automations
           # Else the tag is a stable tag or RC tag or post tag
           elif [[ "${{ github.event.ref }}" =~ $STABLE ]] || \
                [[ "${{ github.event.ref }}" =~ $RC ]] || \
