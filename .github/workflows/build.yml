@@ -84,7 +84,7 @@ jobs:
       - name: New code definition
         if: ${{ needs.latestRelease.outputs.latest_release }}
         run: echo "${{ github.ref }} is at version ${{ needs.latestRelease.outputs.latest_release }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Python ${{ inputs.python_v }}
