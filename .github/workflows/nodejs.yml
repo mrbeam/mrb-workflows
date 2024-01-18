@@ -79,7 +79,7 @@ jobs:
     - name: New code definition
       if: ${{ needs.latestRelease.outputs.latest_release }}
       run: echo "${{ github.ref }} is at version ${{ needs.latestRelease.outputs.latest_release }}"
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     - name: Use Node.js ${{ inputs.node_version }}
@@ -119,7 +119,7 @@ jobs:
     name: Check formatting
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Use Node.js ${{ inputs.node_version }}
