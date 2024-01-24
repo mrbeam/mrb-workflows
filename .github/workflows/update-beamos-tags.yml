@@ -29,7 +29,7 @@ jobs:
             REPO_NAME=mrb3-${REPO_NAME}
           fi
           echo "REPO_NAME: $REPO_NAME"
-          echo "ref name : ${{ github.event.ref }}"
+          echo "ref name : ${{ github.event.release.tag_name }}"
 
           # Define conditions
           ALPHA="^v[0-9]+\.[0-9]+\.[0-9]+a[0-9]+$"
@@ -38,21 +38,21 @@ jobs:
           POST="^v[0-9]+\.[0-9]+\.[0-9]+\.post[0-9]+$"
 
           # Check if the tag is an alpha tag
-          if [[ "${{ github.event.ref }}" =~ $ALPHA ]]; then
+          if [[ "${{ github.event.release.tag_name }}" =~ $ALPHA ]]; then
             git checkout test_automations
-            sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.ref }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
+            sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.release.tag_name }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
             git add .
-            git commit -m "Update $REPO_NAME to ${{ github.event.ref }}"
+            git commit -m "Update $REPO_NAME to ${{ github.event.release.tag_name }}"
             git push origin test_automations
           # Else the tag is a stable tag or RC tag or post tag
-          elif [[ "${{ github.event.ref }}" =~ $STABLE ]] || \
-               [[ "${{ github.event.ref }}" =~ $RC ]] || \
-               [[ "${{ github.event.ref }}" =~ $POST ]]; then
+          elif [[ "${{ github.event.release.tag_name }}" =~ $STABLE ]] || \
+               [[ "${{ github.event.release.tag_name }}" =~ $RC ]] || \
+               [[ "${{ github.event.release.tag_name }}" =~ $POST ]]; then
             git checkout stable
-            sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.ref }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
+            sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.release.tag_name }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
             git add .
-            git commit -m "Update $REPO_NAME to ${{ github.event.ref }}"
+            git commit -m "Update $REPO_NAME to ${{ github.event.release.tag_name }}"
             git push origin stable
           else
-            echo "Tag format not recognized : ${{ github.event.ref }} "
+            echo "Tag format not recognized : ${{ github.event.release.tag_name }} "
           fi
