@@ -91,7 +91,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
             python-version: ${{ inputs.python_v }}
-      - uses: actions/cache@v3  # Cache dependencies to speed up process
+      - uses: actions/cache@v4  # Cache dependencies to speed up process
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
@@ -140,15 +140,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: pylint-report.log
           path: ./pylint-report.log
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: code-coverage
           path: htmlcov
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: pytest-report
           path: pytest-report.html
