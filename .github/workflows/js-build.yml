@@ -1,0 +1,40 @@
+name: JavaScript build
+
+on:
+  workflow_call:
+
+jobs:
+  js_build:
+    name: JavaScript tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if package.json exists
+        run: test -f package.json
+        continue-on-error: true
+        id: check_package_json
+
+      # Only set up Node.js if package.json exists
+      - name: Setup Node.js
+        if: steps.check_package_json.outcome == 'success'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        if: steps.check_package_json.outcome == 'success'
+        run: npm install
+
+      - name: Run Jest tests
+        if: steps.check_package_json.outcome == 'success' && success()
+        run: npm test
+
+      - name: No Jest tests found
+        if: steps.check_package_json.outcome == 'success' && failure()
+        run: echo "No Jest tests found, skipping test execution"
+
+      - name: No package.json found
+        if: steps.check_package_json.outcome == 'failure'
+        run: echo "No package.json found, skipping Jest test execution"
