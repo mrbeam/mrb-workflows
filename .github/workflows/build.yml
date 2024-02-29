@@ -154,7 +154,7 @@ jobs:
           path: pytest-report.html
 
   js_build:
-    uses: mrbeam/mrb-workflows/.github/workflows/js-build.yml@SW-4429-run-jest-tests-as-part-of-the-main-pipeline
+    uses: mrbeam/mrb-workflows/.github/workflows/js-build.yml@main
 
   format:
     uses: mrbeam/mrb-workflows/.github/workflows/format.yml@main
