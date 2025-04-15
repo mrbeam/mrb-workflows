@@ -43,7 +43,7 @@ jobs:
             sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.release.tag_name }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
             git add .
             git commit -m "Update $REPO_NAME to ${{ github.event.release.tag_name }}"
-            git push origin alpha
+            git push origin test_automations
           # Else the tag is a stable tag or RC tag or post tag
           elif [[ "${{ github.event.release.tag_name }}" =~ $STABLE ]] || \
                [[ "${{ github.event.release.tag_name }}" =~ $RC ]] || \
