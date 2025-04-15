@@ -48,11 +48,11 @@ jobs:
           elif [[ "${{ github.event.release.tag_name }}" =~ $STABLE ]] || \
                [[ "${{ github.event.release.tag_name }}" =~ $RC ]] || \
                [[ "${{ github.event.release.tag_name }}" =~ $POST ]]; then
-            git checkout stable
+            git checkout test_automations
             sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.release.tag_name }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
             git add .
             git commit -m "Update $REPO_NAME to ${{ github.event.release.tag_name }}"
-            git push origin stable
+            git push origin test_automations
           else
             echo "Tag format not recognized : ${{ github.event.release.tag_name }} "
           fi
