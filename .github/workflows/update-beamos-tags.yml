@@ -39,7 +39,7 @@ jobs:
 
           # Check if the tag is an alpha tag
           if [[ "${{ github.event.release.tag_name }}" =~ $ALPHA ]]; then
-            git checkout alpha
+            git checkout test_automations
             sed -E "s/(TAG_${REPO_NAME}=\s+\")[^\"]+\"/\1${{ github.event.release.tag_name }}\"/" mrbeam-git-tags.inc > tmpfile && mv tmpfile mrbeam-git-tags.inc
             git add .
             git commit -m "Update $REPO_NAME to ${{ github.event.release.tag_name }}"
