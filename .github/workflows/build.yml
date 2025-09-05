@@ -118,40 +118,6 @@ jobs:
             set -o pipefail  # This will use the exit code of the pylint command, and not the tee
             pylint --ignore-patterns=tests/* --fail-under=${{ inputs.pylint_fail_under }} **/*.py  2>&1 | tee pylint-report.log
           fi
-      - name: SonarCloud Scan
-        if: always()
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          # qualitygate.wait=true: will fail the build if the quality gate is not met
-          # projectVersion: the version to which the code needs to be compared (will only apply on push, no PR)
-          args: >
-            -Dsonar.projectVersion=${{ needs.latest_release.outputs.latest_release }}
-            -Dsonar.python.version=${{ inputs.python_v }}
-            -Dsonar.organization=${{ github.repository_owner }} 
-            -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
-            -Dsonar.projectName=${{ github.event.repository.name }}
-            -Dsonar.sources=${{ inputs.source_dir }}
-            -Dsonar.tests=tests
-            -Dsonar.python.coverage.reportPaths=coverage*.xml
-            -Dsonar.python.xunit.reportPath=xunit-result*.xml
-            -Dsonar.dynamicAnalysis=reuseReports
-            -Dsonar.coverage.exclusions=${{ inputs.exclude_from_coverage }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pylint-report.log
-          path: ./pylint-report.log
-      - uses: actions/upload-artifact@v4
-        with:
-          name: code-coverage
-          path: htmlcov
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pytest-report
-          path: pytest-report.html
 
   js_build:
     uses: mrbeam/mrb-workflows/.github/workflows/js-build.yml@main
