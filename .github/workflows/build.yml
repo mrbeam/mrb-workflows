@@ -88,10 +88,10 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Python ${{ inputs.python_v }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
             python-version: ${{ inputs.python_v }}
-      - uses: actions/cache@v4  # Cache dependencies to speed up process
+      - uses: actions/cache@v6  # Cache dependencies to speed up process
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
