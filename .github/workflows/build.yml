@@ -105,6 +105,17 @@ jobs:
             then
               pip install --force-reinstall -r requirements-dev.txt
             fi
+      - name: Set up Node for Python-driven JavaScript tests
+        if: ${{ hashFiles('package-lock.json') != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dependencies for Python-driven JavaScript tests
+        if: ${{ hashFiles('package-lock.json') != '' }}
+        env:
+          CYPRESS_INSTALL_BINARY: '0'
+        run: npm ci --include=dev
       - name: Run pytest
         id: pytest
         run: |
