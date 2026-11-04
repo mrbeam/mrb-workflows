@@ -30,7 +30,7 @@ jobs:
   # (New code = code changes from the latest release)
   latest_release:
     name: Get latest release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     continue-on-error: true
     outputs:
       latest_release: ${{ steps.latest_release.outputs.tag }}
@@ -78,7 +78,7 @@ jobs:
 
   python_build:
     name: Python build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: latest_release
     steps:
       - name: New code definition

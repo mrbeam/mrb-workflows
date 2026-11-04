@@ -25,7 +25,7 @@ jobs:
   # (New code = code changes from the latest release)
   latestRelease:
     name: Get latest release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     continue-on-error: true
     outputs:
       latest_release: ${{ steps.latestRelease.outputs.tag }}
@@ -73,7 +73,7 @@ jobs:
 
   build:
     name: Node.js CI
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: latestRelease
     steps:
     - name: New code definition
@@ -117,7 +117,7 @@ jobs:
   
   format:
     name: Check formatting
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
